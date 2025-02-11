@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRCO | Сгенерируй Свой QR Код за Минуту!</title>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Knewave&family=Oi&display=swap" rel="stylesheet">
+<link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: knewave;
+            color: black;
+        }
+        .knewave-regular {
+  font-family: "Knewave", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+        ion-icon{
+            color: white;
+            margin-bottom: -3px;
+            margin-right: 5px;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #2d2f3a; /* Цвет из логотипа */
+            text-align: center;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            width: 450px; /* Увеличенный главный блок */
+            text-align: center;
+        }
+        .logo {
+            width: 140px; /* Увеличенный логотип */
+            margin-bottom: 15px;
+        }
+        h2 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: none;
+            text-align: center;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            border: none;
+            background: #1f3f49;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #ff9966;
+            transform: scale(1.05);
+        }
+        #qrcode-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .generate{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #qrcode {
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            background: #1f3f49;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .links a:hover {
+            background: #683d28;
+            transform: scale(1.05);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="logo.png" alt="Логотип" class="logo"> <!-- Подставь путь к логотипу -->
+        <h2><ion-icon name="qr-code-outline"></ion-icon> QR КОД ГЕНЕРАТОР </h2>
+        <input type="text" id="text-input" placeholder="Введите ссылку">
+        <br>
+        <button onclick="generateQRCode()" class="generate"><ion-icon name="arrow-forward-circle-outline"></ion-icon>Создать QR-код</button>
+        <br>
+        <div id="qrcode-container">
+            <div id="qrcode"></div>
+        </div>
+        <br>
+        <button id="download-btn" style="display:none;" onclick="downloadQRCode()"><ion-icon name="download-outline"></ion-icon> Скачать QR-код</button>
+        <div class="links">
+            <a href="https://www.instagram.com/" target="_blank"><ion-icon name="logo-instagram"></ion-icon> Instagram</a>
+            <a href="https://www.buymeacoffee.com/" target="_blank"><ion-icon name="cafe-outline"></ion-icon> Buy Me A Coffee</a>
+        </div>
+    </div>
+
+    <script>
+        function generateQRCode() {
+            let text = document.getElementById("text-input").value;
+            let qrCodeDiv = document.getElementById("qrcode");
+            let qrCodeContainer = document.getElementById("qrcode-container");
+            let downloadBtn = document.getElementById("download-btn");
+
+            if (!text.startsWith("http://") && !text.startsWith("https://")) {
+                alert("Введите ссылку!");
+                return;
+            }
+
+            qrCodeDiv.innerHTML = "";
+            new QRCode(qrCodeDiv, {
+                text: text,
+                width: 200,
+                height: 200
+            });
+
+            qrCodeContainer.style.display = "flex";
+            qrCodeContainer.classList.add("fade-in");
+            downloadBtn.style.display = "inline-block";
+        }
+
+        function downloadQRCode() {
+            let qrCodeCanvas = document.querySelector("#qrcode canvas");
+            let link = document.createElement("a");
+            link.href = qrCodeCanvas.toDataURL("image/png");
+            link.download = "Qr&Co_uz.png";
+            link.click();
+        }
+    </script>
+</body>
+</html>
